@@ -41,9 +41,11 @@ public class AInteger {
         if (negative2) num2 = num2.substring(1);
 
         if (negative1 && negative2) {
-            return other.subtract(new AInteger(num1));
+            return new AInteger("-" + new AInteger(num1).add(new AInteger(num2)).value);
         } else if (!negative1 && negative2) {
             return this.subtract(new AInteger(num2));
+        } else if(negative1 && !negative2) {
+            return other.add(this);
         }
 
         int len1 = num1.length();
@@ -53,7 +55,7 @@ public class AInteger {
         int j = len2-1;
         int carry = 0;
         while(i>=0 || j>=0 || carry > 0){
-            int digitOf1 = (i> 0) ? num1.charAt(i)-'0' : 0;
+            int digitOf1 = (i>=0) ? num1.charAt(i)-'0' : 0;
             int digitOf2 = (j>=0) ? num2.charAt(j)-'0' : 0;
             int sum = digitOf1 + digitOf2 + carry;
             answer.append(sum%10);
@@ -126,4 +128,49 @@ public class AInteger {
         if (negative) string  = "-" + string;
         return new AInteger(string);
     }
+
+    public AInteger mul(AInteger other){
+        String num1 = this.value;
+        String num2 = other.value;
+        boolean negative = false;
+
+        if (num1.charAt(0) == '-') {
+            negative = !negative;
+            num1 = num1.substring(1);
+        }
+        if (num2.charAt(0) == '-') {
+            negative = !negative;
+            num2 = num2.substring(1);
+        }
+        if (num1.equals("0") || num2.equals("0")) return new AInteger();
+
+        String output = "0";
+        int len1 = num1.length();
+        int len2 = num2.length();
+        int i = len1-1;
+
+        while(i>= 0){
+            StringBuilder sub = new StringBuilder();
+            int carry = 0;
+
+            for(int j=len2-1;j >= 0;j--){
+                int sum = (num1.charAt(i)-'0')*(num2.charAt(j)-'0') + carry;
+                sub.append(sum%10);
+                carry = sum/10;
+            }
+            if(carry != 0){
+                sub.append(carry);
+            }
+            sub.reverse();
+            for (int z = 0; z < len1 - 1 - i; z++) sub.append('0');
+            AInteger a = new AInteger(output);
+            output = a.add(new AInteger(sub.toString())).value;
+            System.out.println(output + " " + sub.toString());
+            i--;
+            
+        }
+        String finalStr =  negative ? "-" + output: output;
+        return new AInteger(finalStr);
+    }
+    
 }
