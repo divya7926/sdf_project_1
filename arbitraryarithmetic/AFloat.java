@@ -196,6 +196,64 @@ public class AFloat {
         return new AFloat(output);
     }
     
+    public AFloat mul(AFloat other) {
+        String num1 = this.value;
+        String num2 = other.value;
+        boolean negative = false;
     
+        if (num1.startsWith("-")) {
+            negative = !negative;
+            num1 = num1.substring(1);
+        }
+        if (num2.startsWith("-")) {
+            negative = !negative;
+            num2 = num2.substring(1);
+        }
+    
+        if (!num1.contains(".")) num1 += ".0";
+        if (!num2.contains(".")) num2 += ".0";
+    
+        num1 = AInteger.removeZeroes(num1);
+        num2 = AInteger.removeZeroes(num2);
+    
+        if (num1.equals("0") || num2.equals("0")) return new AFloat("0");
+    
+        int dec1 = num1.length() - 1 - num1.indexOf('.');
+        int dec2 = num2.length() - 1 - num2.indexOf('.');
+        int totalDec = dec1 + dec2;
+
+        num1 = num1.replace(".", "");
+        num2 = num2.replace(".", "");
+    
+        AInteger int1 = new AInteger(num1);
+        AInteger int2 = new AInteger(num2);
+    
+        String resultRaw = int1.mul(int2).value;
+    
+        while (resultRaw.length() <= totalDec) {
+            resultRaw = "0" + resultRaw;
+        }
+    
+        StringBuilder resultBuilder = new StringBuilder(resultRaw);
+        if (totalDec > 0) {
+            resultBuilder.insert(resultBuilder.length() - totalDec, ".");
+        }
+    
+        String result = resultBuilder.toString();
+
+        while (result.length() > 1 && result.charAt(0) == '0' && result.charAt(1) != '.') {
+            result = result.substring(1);
+        }
+
+        if (result.contains(".")) {
+            while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
+            if (result.endsWith(".")) result = result.substring(0, result.length() - 1);
+        }
+    
+        if (result.isEmpty()) result = "0";
+        if (negative && !result.equals("0")) result = "-" + result;
+    
+        return new AFloat(result);
+    }
     
 }
