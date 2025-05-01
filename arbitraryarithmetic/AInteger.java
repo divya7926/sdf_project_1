@@ -64,10 +64,10 @@ public class AInteger {
             j--;
         }
 
-        if(negative1 && negative2) answer.append('-');
+    
         answer = new StringBuilder(removeZeroes(answer.reverse().toString()));
 
-        return new AInteger(new String(answer.toString()));
+        return new AInteger(answer.toString());
     }
 
     public AInteger subtract(AInteger other) {
@@ -126,6 +126,8 @@ public class AInteger {
 
         String string = removeZeroes(answer.reverse().toString());
         if (negative) string  = "-" + string;
+        if (string.equals("0") || string.equals("-0")) string = "0";
+
         return new AInteger(string);
     }
 
@@ -169,8 +171,69 @@ public class AInteger {
             i--;
             
         }
+        output = removeZeroes(output);
+        if (output.equals("0")) negative = false;
         String finalStr =  negative ? "-" + output: output;
         return new AInteger(finalStr);
     }
+
+    public AInteger div(AInteger other) {
+        String dividend = this.value;
+        String divisor = other.value;
     
+        if (divisor.equals("0") || divisor.equals("-0")) {
+            return new AInteger("");
+        }
+    
+        boolean negative = false;
+        if (dividend.charAt(0) == '-') {
+            negative = !negative;
+            dividend = dividend.substring(1);
+        }
+        if (divisor.charAt(0) == '-') {
+            negative = !negative;
+            divisor = divisor.substring(1);
+        }
+        dividend=removeZeroes(dividend);
+        int m = 0;
+        while (m < divisor.length() - 1 && divisor.charAt(m) == '0') m++;
+        divisor = divisor.substring(m);
+    
+        StringBuilder result = new StringBuilder();
+        String current = "";
+    
+        for (int i = 0; i < dividend.length(); i++) {
+            current += dividend.charAt(i);
+            int j = 0;
+            while (j < current.length() - 1 && current.charAt(j) == '0') j++;
+            current = current.substring(j);
+    
+            int count = 0;
+            while (compare(current, divisor) >= 0) {
+                AInteger a = new AInteger(current);
+                current = a.subtract(new AInteger(divisor)).value;
+                count++;
+            }
+    
+            result.append(count);
+        }
+
+        String quotient = result.toString();
+        if (quotient.isEmpty()) quotient = "0";
+        else{
+        int n = 0;
+        while (n < quotient.length() - 1 && quotient.charAt(n) == '0') n++;
+       
+         quotient = quotient.substring(n);}
+    
+        if (quotient.equals("0")) negative = false; 
+    
+        return new AInteger(negative ? "-" + quotient : quotient);
+    }
+
+    public static void main(String[] args) {
+        AInteger num1 = new AInteger("132");
+        AInteger num2 = new AInteger("22");
+        System.out.println(num1.div(num2).value);
+    }
 }
