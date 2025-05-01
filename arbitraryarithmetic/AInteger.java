@@ -26,10 +26,10 @@ public class AInteger {
         return num1.compareTo(num2);
     }
 
-    public static String removeZeroes(String value){
-        int i = 0;
-        while(i< value.length()-1 && value.charAt(i) == '0') i++;
-        return value.substring(i);
+    public static String removeZeroes(String value){ 
+        int i = 0; // we have to initialize index i to 0 
+        while(i< value.length()-1 && value.charAt(i) == '0') i++; //we have to check for the first non zero character
+        return value.substring(i);  // it will effectivily remove the leading zero and returns the final value
     }
 
     public AInteger add(AInteger other){
