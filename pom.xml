@@ -1,0 +1,15 @@
+<project name="SDF_Java_Project" default="compile" basedir=".">
+
+    <property name="src.dir" value="arbitraryarithmetic"/>
+    <property name="build.dir" value="build"/>
+
+    <target name="clean" >
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" >
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"/>
+    </target>
+
+</project>
