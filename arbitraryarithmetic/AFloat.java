@@ -256,4 +256,106 @@ public class AFloat {
         return new AFloat(result);
     }
     
+    public AFloat div(AFloat other) {
+        String dividend = this.value;
+        String divisor = other.value;
+    
+        boolean negative = false;
+        if (dividend.startsWith("-")) {
+            negative = !negative;
+            dividend = dividend.substring(1);
+        }
+        if (divisor.startsWith("-")) {
+            negative = !negative;
+            divisor = divisor.substring(1);
+        }
+    
+        int first_decimal = dividend.indexOf('.');
+        int second_decimal = divisor.indexOf('.');
+    
+        int decimal_num1 = (first_decimal == -1) ? 0 : (dividend.length() - first_decimal - 1);
+        int decimal_num2 = (second_decimal == -1) ? 0 : (divisor.length() - second_decimal - 1);
+    
+        if (first_decimal != -1) {
+            dividend = dividend.substring(0, first_decimal) + dividend.substring(first_decimal + 1);
+        }
+        if (second_decimal != -1) {
+            divisor = divisor.substring(0, second_decimal) + divisor.substring(second_decimal + 1);
+        }
+    
+        dividend = AInteger.removeZeroes(dividend);
+        divisor = AInteger.removeZeroes(divisor);
+    
+        if (divisor.equals("0")) throw new ArithmeticException("Division by zero");
+    
+        int shift = decimal_num2 - decimal_num1;
+    
+        StringBuilder result = new StringBuilder();
+        String current = "";
+    
+        for (int i = 0; i < dividend.length(); i++) {
+            current += dividend.charAt(i);
+            current = AInteger.removeZeroes(current);
+            if (AInteger.compare(current, divisor) < 0) {
+                result.append(result.length() == 0 ? "0" : "0");
+                continue;
+            }
+            int count = 0;
+            while (AInteger.compare(current, divisor) >= 0) {
+                current = new AFloat(current).subtract(new AFloat(divisor)).value;
+                count++;
+            }
+            result.append(count);
+        }
+    
+        result.append('.');
+        int precision = 1000;
+        while (precision > 0) {
+            current += "0";
+            current = AInteger.removeZeroes(current);
+            if (AInteger.compare(current, divisor) < 0) {
+                result.append('0');
+            } else {
+                int count = 0;
+                while (AInteger.compare(current, divisor) >= 0) {
+                    current = new AFloat(current).subtract(new AFloat(divisor)).value;
+                    count++;
+                }
+                result.append(count);
+            }
+            precision--;
+        }
+    
+        int decimal_index = result.indexOf(".");
+        result.deleteCharAt(decimal_index);
+    
+        int new_index = decimal_index + shift;
+    
+        if (new_index <= 0) {
+            while (new_index < 0) {
+                result.insert(0, '0');
+                new_index++;
+            }
+            result.insert(0, "0.");
+        } else {
+            while (result.length() <= new_index) {
+                result.append('0');
+            }
+            result.insert(new_index, '.');
+        }
+    
+        String finalResult = result.toString();
+        if (finalResult.contains(".")) {
+            finalResult = finalResult.replaceAll("0+$", "");
+            if (finalResult.endsWith(".")) {
+                finalResult = finalResult.substring(0, finalResult.length() - 1);
+            }
+        }
+        finalResult = AInteger.removeZeroes(finalResult);
+        if (negative && !finalResult.equals("0")) {
+            finalResult = "-" + finalResult;
+        }
+    
+        return new AFloat(finalResult);
+    }
 }
