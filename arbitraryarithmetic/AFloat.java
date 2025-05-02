@@ -1,361 +1,303 @@
-package arbitraryarithmetic;
+package arbitraryarithmetic; 
 
-public class AFloat {
-    protected String value;
-    public AFloat(){
-        this.value = "0.0";
+public class AFloat { 
+    protected String value; // Stores number as string
+
+    public AFloat() { 
+        this.value = "0.0"; // Sets value to "0.0"
     }
 
-    public AFloat(String value){
-        this.value = value;
+    public AFloat(String value) { // Constructor with string input
+        this.value = value; // Sets value to input string
     }
 
-    public AFloat(AFloat other){
-        this.value = other.value;
+    public AFloat(AFloat other) {
+        this.value = other.value; // Copies value from another AFloat
     }
 
-    public AFloat parse(String value){
-        return new AFloat(value);
+    public AFloat parse(String value) { // Creates AFloat from string
+        return new AFloat(value); // Returns new AFloat with input string
     }
 
-    public String getString(){
-        return this.value;
+    public String getString() { // Gets value as string
+        return this.value; // Returns value
     }
 
     @Override
-    public String toString(){
-        return this.value;
+    public String toString() { // Returns string form of number
+        return this.value; // Gives value as string
     }
 
-    public AFloat add(AFloat other) {
-        String num1 = this.value;
-        String num2 = other.value;
-    
-        boolean neg1 = num1.startsWith("-");
-        boolean neg2 = num2.startsWith("-");
-    
-        if (neg1) num1 = num1.substring(1);
-        if (neg2) num2 = num2.substring(1);
-    
-        if (!num1.contains(".")) num1 += ".0";
-        if (!num2.contains(".")) num2 += ".0";
-    
-        if (num1.endsWith(".")) num1 += "0";
-        if (num2.endsWith(".")) num2 += "0";
-    
-
-        if (neg1 && !neg2) {
-            return new AFloat(num2).subtract(new AFloat(num1));
+    public AFloat add(AFloat other) { // Adds another AFloat
+        String num1 = this.value; // Gets this number
+        String num2 = other.value; // Gets other number
+        boolean neg1 = num1.startsWith("-"); // Checks if num1 is negative
+        boolean neg2 = num2.startsWith("-"); // Checks if num2 is negative
+        if (neg1) num1 = num1.substring(1); // Removes negative sign from num1
+        if (neg2) num2 = num2.substring(1); // Removes negative sign from num2
+        if (!num1.contains(".")) num1 += ".0"; // Adds .0 if no decimal
+        if (!num2.contains(".")) num2 += ".0"; // Adds .0 if no decimal
+        if (num1.endsWith(".")) num1 += "0"; // Adds 0 if ends with dot
+        if (num2.endsWith(".")) num2 += "0"; // Adds 0 if ends with dot
+        if (neg1 && !neg2) { // Negative plus positive: subtract
+            return new AFloat(num2).subtract(new AFloat(num1)); // Subtracts num1 from num2
         }
-
-        if (!neg1 && neg2) {
-            return this.subtract(new AFloat(num2));
+        if (!neg1 && neg2) { // Positive minus negative: subtract
+            return this.subtract(new AFloat(num2)); // Subtracts num2
         }
-    
-        if (num1.startsWith(".")) num1 = "0" + num1;
-        if (num2.startsWith(".")) num2 = "0" + num2;
-    
-        int int1 = num1.indexOf(".");
-        int int2 = num2.indexOf(".");
-        int dec1 = num1.length() - int1 - 1;
-        int dec2 = num2.length() - int2 - 1;
-    
-        while (dec1 < dec2) {
-            num1 += "0";
-            dec1++;
+        if (num1.startsWith(".")) num1 = "0" + num1; // Adds 0 before decimal
+        if (num2.startsWith(".")) num2 = "0" + num2; // Adds 0 before decimal
+        int int1 = num1.indexOf("."); // Finds decimal position in num1
+        int int2 = num2.indexOf("."); // Finds decimal position in num2
+        int dec1 = num1.length() - int1 - 1; // Counts decimal digits in num1
+        int dec2 = num2.length() - int2 - 1; // Counts decimal digits in num2
+        while (dec1 < dec2) { // Aligns decimal digits
+            num1 += "0"; // Adds 0 to num1
+            dec1++; // Updates dec1
         }
-        while (dec2 < dec1) {
-            num2 += "0";
-            dec2++;
+        while (dec2 < dec1) { // Aligns decimal digits
+            num2 += "0"; // Adds 0 to num2
+            dec2++; // Updates dec2
         }
-    
-        while (int1 < int2) {
-            num1 = "0" + num1;
-            int1++;
+        while (int1 < int2) { // Aligns integer part
+            num1 = "0" + num1; // Adds 0 to num1
+            int1++; // Updates int1
         }
-        while (int2 < int1) {
-            num2 = "0" + num2;
-            int2++;
+        while (int2 < int1) { // Aligns integer part
+            num2 = "0" + num2; // Adds 0 to num2
+            int2++; // Updates int2
         }
-    
-        num1 = num1.replace(".", "");
-        num2 = num2.replace(".", "");
-    
-        String res = new AInteger(num1).add(new AInteger(num2)).value;
-        StringBuilder result = new StringBuilder(res);
-    
-        int decimalPos = Math.max(dec1, dec2);
-        if (decimalPos > 0) {
-            result.insert(result.length() - decimalPos, ".");
+        num1 = num1.replace(".", ""); // Removes decimal point
+        num2 = num2.replace(".", ""); // Removes decimal point
+        String res = new AInteger(num1).add(new AInteger(num2)).value; // Adds as integers
+        StringBuilder result = new StringBuilder(res); // Builds result
+        int decimalPos = Math.max(dec1, dec2); // Finds decimal position
+        if (decimalPos > 0) { // Adds decimal point if needed
+            result.insert(result.length() - decimalPos, "."); // Inserts decimal
         }
-    
-        String resStr = result.toString();
-    
-        while (resStr.length() > 1 && resStr.charAt(0) == '0' && resStr.charAt(1) != '.') {
-            resStr = resStr.substring(1);
+        String resStr = result.toString(); // Gets result string
+        while (resStr.length() > 1 && resStr.charAt(0) == '0' && resStr.charAt(1) != '.') { // Removes leading zeros
+            resStr = resStr.substring(1); // Skips leading 0
         }
-
-        if (resStr.contains(".")) {
-            while (resStr.endsWith("0")) resStr = resStr.substring(0, resStr.length() - 1);
-            if (resStr.endsWith(".")) resStr = resStr.substring(0, resStr.length() - 1);
+        if (resStr.contains(".")) { // Cleans up decimal part
+            while (resStr.endsWith("0")) resStr = resStr.substring(0, resStr.length() - 1); // Removes trailing zeros
+            if (resStr.endsWith(".")) resStr = resStr.substring(0, resStr.length() - 1); // Removes trailing dot
         }
-
-        if (neg1 && neg2 && !resStr.equals("0")) {
-            resStr = "-" + resStr;
+        if (neg1 && neg2 && !resStr.equals("0")) { // Both negative: add negative sign
+            resStr = "-" + resStr; // Adds negative sign
         }
-  
-        if (resStr.equals("-0")) {
-            resStr = "0";
+        if (resStr.equals("-0")) { // Avoids negative zero
+            resStr = "0"; // Sets to 0
         }
-    
-        return new AFloat(resStr);
+        return new AFloat(resStr); // Returns result as AFloat
     }
-       
-    public AFloat subtract(AFloat other) {
-        String num1 = this.value;
-        String num2 = other.value;
-        boolean neg1 = num1.startsWith("-");
-        boolean neg2 = num2.startsWith("-");
-        
-        if (neg1) num1 = num1.substring(1);
-        if (neg2) num2 = num2.substring(1);
-        if (!num1.contains(".")) num1 += ".0";
-        if (!num2.contains(".")) num2 += ".0";
 
-        if (neg1 && !neg2) {
-            return new AFloat("-" + new AFloat(num1).add(new AFloat(num2)).value);
-        } else if (!neg1 && neg2) {
-            return this.add(new AFloat(num2));
-        } else if (neg1 && neg2) {
-            return new AFloat(num2).subtract(new AFloat(num1));
+    public AFloat subtract(AFloat other) { // Subtracts another AFloat
+        String num1 = this.value; // Gets this number
+        String num2 = other.value; // Gets other number
+        boolean neg1 = num1.startsWith("-"); // Checks if num1 is negative
+        boolean neg2 = num2.startsWith("-"); // Checks if num2 is negative
+        if (neg1) num1 = num1.substring(1); // Removes negative sign from num1
+        if (neg2) num2 = num2.substring(1); // Removes negative sign from num2
+        if (!num1.contains(".")) num1 += ".0"; // Adds .0 if no decimal
+        if (!num2.contains(".")) num2 += ".0"; // Adds .0 if no decimal
+        if (neg1 && !neg2) { // Negative minus positive: negate sum
+            return new AFloat("-" + new AFloat(num1).add(new AFloat(num2)).value); // Negates sum
+        } else if (!neg1 && neg2) { // Positive minus negative: add
+            return this.add(new AFloat(num2)); // Adds num2
+        } else if (neg1 && neg2) { // Both negative: swap subtraction
+            return new AFloat(num2).subtract(new AFloat(num1)); // Subtracts num1 from num2
         }
-
-        int dec1 = num1.length() - 1 - num1.indexOf('.');
-        int dec2 = num2.length() - 1 - num2.indexOf('.');
-        while (dec1 < dec2) {
-            num1 += "0";
-            dec1++;
+        int dec1 = num1.length() - 1 - num1.indexOf('.'); // Counts decimal digits in num1
+        int dec2 = num2.length() - 1 - num2.indexOf('.'); // Counts decimal digits in num2
+        while (dec1 < dec2) { // Aligns decimal digits
+            num1 += "0"; // Adds 0 to num1
+            dec1++; // Updates dec1
         }
-        while (dec2 < dec1) {
-            num2 += "0";
-            dec2++;
+        while (dec2 < dec1) { // Aligns decimal digits
+            num2 += "0"; // Adds 0 to num2
+            dec2++; // Updates dec2
         }
-
-        int int1 = num1.indexOf('.');
-        int int2 = num2.indexOf('.');
-        while (int1 < int2) {
-            num1 = "0" + num1;
-            int1++;
+        int int1 = num1.indexOf('.'); // Finds decimal position in num1
+        int int2 = num2.indexOf('.'); // Finds decimal position in num2
+        while (int1 < int2) { // Aligns integer part
+            num1 = "0" + num1; // Adds 0 to num1
+            int1++; // Updates int1
         }
-        while (int2 < int1) {
-            num2 = "0" + num2;
-            int2++;
+        while (int2 < int1) { // Aligns integer part
+            num2 = "0" + num2; // Adds 0 to num2
+            int2++; // Updates int2
         }
-
-        String num1Comp = num1.replace(".", "");
-        String num2Comp = num2.replace(".", "");
-    
-        boolean negative = false;
-        if (num1Comp.compareTo(num2Comp) < 0) {
-            negative = true;
-            String temp = num1Comp;
-            num1Comp = num2Comp;
-            num2Comp = temp;
+        String num1Comp = num1.replace(".", ""); // Removes decimal point
+        String num2Comp = num2.replace(".", ""); // Removes decimal point
+        boolean negative = false; // Sets result sign
+        if (num1Comp.compareTo(num2Comp) < 0) { // Checks if num1 < num2
+            negative = true; // Marks result as negative
+            String temp = num1Comp; // Swaps numbers
+            num1Comp = num2Comp; // Sets num1Comp to larger
+            num2Comp = temp; // Sets num2Comp to smaller
         }
-    
-        AInteger a1 = new AInteger(num1Comp);
-        AInteger a2 = new AInteger(num2Comp);
-        String res = a1.subtract(a2).value;
-
-        while (res.length() < num1Comp.length()) {
-            res = "0" + res;
+        AInteger a1 = new AInteger(num1Comp); // Creates AInteger for num1
+        AInteger a2 = new AInteger(num2Comp); // Creates AInteger for num2
+        String res = a1.subtract(a2).value; // Subtracts as integers
+        while (res.length() < num1Comp.length()) { // Pads result with zeros
+            res = "0" + res; // Adds leading 0
         }
-    
-        StringBuilder result = new StringBuilder(res);
-        int decimalPos = Math.max(dec1, dec2);
-        if (decimalPos > 0) {
-            result.insert(result.length() - decimalPos, ".");
+        StringBuilder result = new StringBuilder(res); // Builds result
+        int decimalPos = Math.max(dec1, dec2); // Finds decimal position
+        if (decimalPos > 0) { // Adds decimal point if needed
+            result.insert(result.length() - decimalPos, "."); // Inserts decimal
         }
-    
-        String output = result.toString();
-
-        int start = 0;
-        while (start < output.length() - 1 && output.charAt(start) == '0' && output.charAt(start + 1) != '.') {
-            start++;
+        String output = result.toString(); // Gets result string
+        int start = 0; // Starts index at 0
+        while (start < output.length() - 1 && output.charAt(start) == '0' && output.charAt(start + 1) != '.') { // Removes leading zeros
+            start++; // Skips leading 0
         }
-        output = output.substring(start);
-
-        if (output.contains(".")) {
-            while (output.endsWith("0")) output = output.substring(0, output.length() - 1);
-            if (output.endsWith(".")) output = output.substring(0, output.length() - 1);
+        output = output.substring(start); // Updates output
+        if (output.contains(".")) { // Cleans up decimal part
+            while (output.endsWith("0")) output = output.substring(0, output.length() - 1); // Removes trailing zeros
+            if (output.endsWith(".")) output = output.substring(0, output.length() - 1); // Removes trailing dot
         }
-    
-        if (output.isEmpty()) output = "0";
-        if (negative && !output.equals("0")) output = "-" + output;
-    
-        return new AFloat(output);
+        if (output.isEmpty()) output = "0"; // Sets 0 if empty
+        if (negative && !output.equals("0")) output = "-" + output; // Adds negative sign if needed
+        return new AFloat(output); // Returns result as AFloat
     }
-    
-    public AFloat mul(AFloat other) {
-        String num1 = this.value;
-        String num2 = other.value;
-        boolean negative = false;
-    
-        if (num1.startsWith("-")) {
-            negative = !negative;
-            num1 = num1.substring(1);
-        }
-        if (num2.startsWith("-")) {
-            negative = !negative;
-            num2 = num2.substring(1);
-        }
-    
-        if (!num1.contains(".")) num1 += ".0";
-        if (!num2.contains(".")) num2 += ".0";
-    
-        num1 = AInteger.removeZeroes(num1);
-        num2 = AInteger.removeZeroes(num2);
-    
-        if (num1.equals("0") || num2.equals("0")) return new AFloat("0");
-    
-        int dec1 = num1.length() - 1 - num1.indexOf('.');
-        int dec2 = num2.length() - 1 - num2.indexOf('.');
-        int totalDec = dec1 + dec2;
 
-        num1 = num1.replace(".", "");
-        num2 = num2.replace(".", "");
-    
-        AInteger int1 = new AInteger(num1);
-        AInteger int2 = new AInteger(num2);
-    
-        String resultRaw = int1.mul(int2).value;
-    
-        while (resultRaw.length() <= totalDec) {
-            resultRaw = "0" + resultRaw;
+    public AFloat mul(AFloat other) { // Multiplies another AFloat
+        String num1 = this.value; // Gets this number
+        String num2 = other.value; // Gets other number
+        boolean negative = false; // Sets result sign
+        if (num1.startsWith("-")) { // Checks if num1 is negative
+            negative = !negative; // Flips sign
+            num1 = num1.substring(1); // Removes negative sign
         }
-    
-        StringBuilder resultBuilder = new StringBuilder(resultRaw);
-        if (totalDec > 0) {
-            resultBuilder.insert(resultBuilder.length() - totalDec, ".");
+        if (num2.startsWith("-")) { // Checks if num2 is negative
+            negative = !negative; // Flips sign
+            num2 = num2.substring(1); // Removes negative sign
         }
-    
-        String result = resultBuilder.toString();
-
-        while (result.length() > 1 && result.charAt(0) == '0' && result.charAt(1) != '.') {
-            result = result.substring(1);
+        if (!num1.contains(".")) num1 += ".0"; // Adds .0 if no decimal
+        if (!num2.contains(".")) num2 += ".0"; // Adds .0 if no decimal
+        num1 = AInteger.removeZeroes(num1); // Removes leading zeros
+        num2 = AInteger.removeZeroes(num2); // Removes leading zeros
+        if (num1.equals("0") || num2.equals("0")) return new AFloat("0"); // Returns 0 if either is 0
+        int dec1 = num1.length() - 1 - num1.indexOf('.'); // Counts decimal digits in num1
+        int dec2 = num2.length() - 1 - num2.indexOf('.'); // Counts decimal digits in num2
+        int totalDec = dec1 + dec2; // Sums decimal digits
+        num1 = num1.replace(".", ""); // Removes decimal point
+        num2 = num2.replace(".", ""); // Removes decimal point
+        AInteger int1 = new AInteger(num1); // Creates AInteger for num1
+        AInteger int2 = new AInteger(num2); // Creates AInteger for num2
+        String resultRaw = int1.mul(int2).value; // Multiplies as integers
+        while (resultRaw.length() <= totalDec) { // Pads result with zeros
+            resultRaw = "0" + resultRaw; // Adds leading 0
         }
-
-        if (result.contains(".")) {
-            while (result.endsWith("0")) result = result.substring(0, result.length() - 1);
-            if (result.endsWith(".")) result = result.substring(0, result.length() - 1);
+        StringBuilder resultBuilder = new StringBuilder(resultRaw); // Builds result
+        if (totalDec > 0) { // Adds decimal point if needed
+            resultBuilder.insert(resultBuilder.length() - totalDec, "."); // Inserts decimal
         }
-    
-        if (result.isEmpty()) result = "0";
-        if (negative && !result.equals("0")) result = "-" + result;
-    
-        return new AFloat(result);
+        String result = resultBuilder.toString(); // Gets result string
+        while (result.length() > 1 && result.charAt(0) == '0' && result.charAt(1) != '.') { // Removes leading zeros
+            result = result.substring(1); // Skips leading 0
+        }
+        if (result.contains(".")) { // Cleans up decimal part
+            while (result.endsWith("0")) result = result.substring(0, result.length() - 1); // Removes trailing zeros
+            if (result.endsWith(".")) result = result.substring(0, result.length() - 1); // Removes trailing dot
+        }
+        if (result.isEmpty()) result = "0"; // Sets 0 if empty
+        if (negative && !result.equals("0")) result = "-" + result; // Adds negative sign if needed
+        return new AFloat(result); // Returns result as AFloat
     }
-    
-    public AFloat div(AFloat other) {
-        String dividend = this.value;
-        String divisor = other.value;
-    
-        boolean negative = false;
-        if (dividend.startsWith("-")) {
-            negative = !negative;
-            dividend = dividend.substring(1);
+
+    public AFloat div(AFloat other) { // Divides by another AFloat
+        String dividend = this.value; // Gets this number
+        String divisor = other.value; // Gets other number
+        boolean negative = false; // Sets result sign
+        if (dividend.startsWith("-")) { // Checks if dividend is negative
+            negative = !negative; // Flips sign
+            dividend = dividend.substring(1); // Removes negative sign
         }
-        if (divisor.startsWith("-")) {
-            negative = !negative;
-            divisor = divisor.substring(1);
+        if (divisor.startsWith("-")) { // Checks if divisor is negative
+            negative = !negative; // Flips sign
+            divisor = divisor.substring(1); // Removes negative sign
         }
-    
-        int first_decimal = dividend.indexOf('.');
-        int second_decimal = divisor.indexOf('.');
-    
-        int decimal_num1 = (first_decimal == -1) ? 0 : (dividend.length() - first_decimal - 1);
-        int decimal_num2 = (second_decimal == -1) ? 0 : (divisor.length() - second_decimal - 1);
-    
-        if (first_decimal != -1) {
-            dividend = dividend.substring(0, first_decimal) + dividend.substring(first_decimal + 1);
+        int firstDecimal = dividend.indexOf('.'); // Finds decimal in dividend
+        int secondDecimal = divisor.indexOf('.'); // Finds decimal in divisor
+        int decimalNum1 = (firstDecimal == -1) ? 0 : (dividend.length() - firstDecimal - 1); // Counts decimal digits in dividend
+        int decimalNum2 = (secondDecimal == -1) ? 0 : (divisor.length() - secondDecimal - 1); // Counts decimal digits in divisor
+        if (firstDecimal != -1) { // Removes decimal from dividend
+            dividend = dividend.substring(0, firstDecimal) + dividend.substring(firstDecimal + 1); // Joins parts
         }
-        if (second_decimal != -1) {
-            divisor = divisor.substring(0, second_decimal) + divisor.substring(second_decimal + 1);
+        if (secondDecimal != -1) { // Removes decimal from divisor
+            divisor = divisor.substring(0, secondDecimal) + divisor.substring(secondDecimal + 1); // Joins parts
         }
-    
-        dividend = AInteger.removeZeroes(dividend);
-        divisor = AInteger.removeZeroes(divisor);
-    
-        if (divisor.equals("0")) throw new ArithmeticException("Division by zero error");
-    
-        int shift = decimal_num2 - decimal_num1;
-    
-        StringBuilder result = new StringBuilder();
-        String current = "";
-    
-        for (int i = 0; i < dividend.length(); i++) {
-            current += dividend.charAt(i);
-            current = AInteger.removeZeroes(current);
-            if (AInteger.compare(current, divisor) < 0) {
-                result.append(result.length() == 0 ? "0" : "0");
-                continue;
+        dividend = AInteger.removeZeroes(dividend); // Removes leading zeros
+        divisor = AInteger.removeZeroes(divisor); // Removes leading zeros
+        if (divisor.equals("0")) throw new ArithmeticException("Division by zero error"); // Checks for division by zero
+        int shift = decimalNum2 - decimalNum1; // Calculates decimal shift
+        StringBuilder result = new StringBuilder(); // Builds quotient
+        String current = ""; // Starts empty working number
+        for (int i = 0; i < dividend.length(); i++) { // Loops through dividend digits
+            current += dividend.charAt(i); // Adds digit to working number
+            current = AInteger.removeZeroes(current); // Removes leading zeros
+            if (AInteger.compare(current, divisor) < 0) { // Checks if too small to divide
+                result.append(result.length() == 0 ? "0" : "0"); // Adds 0 to quotient
+                continue; // Skips to next digit
             }
-            int count = 0;
-            while (AInteger.compare(current, divisor) >= 0) {
-                current = new AFloat(current).subtract(new AFloat(divisor)).value;
-                count++;
+            int count = 0; // Counts subtractions
+            while (AInteger.compare(current, divisor) >= 0) { // Subtracts divisor
+                current = new AFloat(current).subtract(new AFloat(divisor)).value; // Updates current
+                count++; // Increments count
             }
-            result.append(count);
+            result.append(count); // Adds count to quotient
         }
-    
-        result.append('.');
-        int precision = 30;
-        while (precision > 0) {
-            current += "0";
-            current = AInteger.removeZeroes(current);
-            if (AInteger.compare(current, divisor) < 0) {
-                result.append('0');
+        result.append('.'); // Adds decimal point
+        int precision = 30; // Sets precision for decimal part
+        while (precision > 0) { // Loops for decimal digits
+            current += "0"; // Adds 0 to working number
+            current = AInteger.removeZeroes(current); // Removes leading zeros
+            if (AInteger.compare(current, divisor) < 0) { // Checks if too small
+                result.append('0'); // Adds 0 to quotient
             } else {
-                int count = 0;
-                while (AInteger.compare(current, divisor) >= 0) {
-                    current = new AFloat(current).subtract(new AFloat(divisor)).value;
-                    count++;
+                int count = 0; // Counts subtractions
+                while (AInteger.compare(current, divisor) >= 0) { // Subtracts divisor
+                    current = new AFloat(current).subtract(new AFloat(divisor)).value; // Updates current
+                    count++; // Increments count
                 }
-                result.append(count);
+                result.append(count); // Adds count to quotient
             }
-            precision--;
+            precision--; // Reduces precision
         }
-    
-        int decimal_index = result.indexOf(".");
-        result.deleteCharAt(decimal_index);
-    
-        int new_index = decimal_index + shift;
-    
-        if (new_index <= 0) {
-            while (new_index < 0) {
-                result.insert(0, '0');
-                new_index++;
+        int decimalIndex = result.indexOf("."); // Finds decimal position
+        result.deleteCharAt(decimalIndex); // Removes decimal point
+        int newIndex = decimalIndex + shift; // Calculates new decimal position
+        if (newIndex <= 0) { // Handles negative shift
+            while (newIndex < 0) { // Adds leading zeros
+                result.insert(0, '0'); // Inserts 0
+                newIndex++; // Updates index
             }
-            result.insert(0, "0.");
+            result.insert(0, "0."); // Adds 0. prefix
         } else {
-            while (result.length() <= new_index) {
-                result.append('0');
+            while (result.length() <= newIndex) { // Pads with zeros
+                result.append('0'); // Adds 0
             }
-            result.insert(new_index, '.');
+            result.insert(newIndex, '.'); // Inserts decimal
         }
-    
-        String finalResult = result.toString();
-        if (finalResult.contains(".")) {
-            finalResult = finalResult.replaceAll("0+$", "");
-            if (finalResult.endsWith(".")) {
-                finalResult = finalResult.substring(0, finalResult.length() - 1);
+        String finalResult = result.toString(); // Gets final result
+        int dotIndex = finalResult.indexOf('.'); // Finds decimal position
+        if (dotIndex != -1) { // Cleans up decimal part
+            int end = finalResult.length() - 1; // Starts at end
+            while (end > dotIndex && finalResult.charAt(end) == '0') { // Removes trailing zeros
+                end--; // Moves left
+            }
+            finalResult = finalResult.substring(0, end + 1); // Updates result
+            if (finalResult.endsWith(".")) { // Removes trailing dot
+                finalResult = finalResult.substring(0, finalResult.length() - 1); // Updates result
             }
         }
-        finalResult = AInteger.removeZeroes(finalResult);
-        if (negative && !finalResult.equals("0")) {
-            finalResult = "-" + finalResult;
+        finalResult = AInteger.removeZeroes(finalResult); // Removes leading zeros
+        if (negative && !finalResult.equals("0")) { // Adds negative sign if needed
+            finalResult = "-" + finalResult; // Adds negative sign
         }
-    
-        return new AFloat(finalResult);
+        return new AFloat(finalResult); // Returns result as AFloat
     }
 }
