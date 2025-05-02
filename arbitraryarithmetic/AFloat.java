@@ -309,7 +309,7 @@ public class AFloat {
         }
     
         result.append('.');
-        int precision = 1000;
+        int precision = 30;
         while (precision > 0) {
             current += "0";
             current = AInteger.removeZeroes(current);
