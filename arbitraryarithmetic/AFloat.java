@@ -286,7 +286,7 @@ public class AFloat {
         dividend = AInteger.removeZeroes(dividend);
         divisor = AInteger.removeZeroes(divisor);
     
-        if (divisor.equals("0")) throw new ArithmeticException("Division by zero");
+        if (divisor.equals("0")) throw new ArithmeticException("Division by zero error");
     
         int shift = decimal_num2 - decimal_num1;
     

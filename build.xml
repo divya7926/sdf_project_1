@@ -1,15 +1,28 @@
-<project name="SDF_Java_Project" default="compile" basedir=".">
+
+<project name="SDF_Java_Project" default="jar" basedir=".">
 
     <property name="src.dir" value="arbitraryarithmetic"/>
     <property name="build.dir" value="build"/>
+    <property name="jar.dir" value="arbitraryarithmetic"/>
+    <property name="main.class" value="arbitraryarithmetic.MyInfArith"/>
 
-    <target name="clean" >
+    <target name="clean">
         <delete dir="${build.dir}"/>
+        <delete file="${jar.dir}/SDF_Java_Project.jar"/>
     </target>
 
-    <target name="compile" >
+    <target name="compile">
         <mkdir dir="${build.dir}"/>
         <javac srcdir="${src.dir}" destdir="${build.dir}"/>
     </target>
-    
+
+    <target name="jar" depends="compile">
+        <jar destfile="${jar.dir}/SDF_Java_Project.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+    </target>
+
 </project>
+
